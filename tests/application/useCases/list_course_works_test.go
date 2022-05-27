@@ -3,13 +3,10 @@ package usecases_test
 import (
 	"testing"
 
+	"github.com/monitoring-go/src/application/protocols/repositories"
 	"github.com/monitoring-go/src/domain/entities"
 	"github.com/stretchr/testify/require"
 )
-
-type ListCourseWorksRepository interface {
-	List() []*entities.CourseWork
-}
 
 type ListCourseWorksRepositoryStub struct {
 	CallsCount int
@@ -27,10 +24,10 @@ func NewListCourseWorksRepositoryStub() *ListCourseWorksRepositoryStub {
 }
 
 type ListCourseWorksService struct {
-	repo ListCourseWorksRepository
+	repo repositories.ListCourseWorksRepository
 }
 
-func NewListCourseWorksService(repo ListCourseWorksRepository) *ListCourseWorksService {
+func NewListCourseWorksService(repo repositories.ListCourseWorksRepository) *ListCourseWorksService {
 	return &ListCourseWorksService{
 		repo: repo,
 	}
