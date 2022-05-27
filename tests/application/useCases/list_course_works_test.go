@@ -1,37 +1,21 @@
 package usecases_test
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/monitoring-go/src/domain/entities"
+	"github.com/stretchr/testify/require"
 )
 
-type Student struct {
-	Name  string
-	Email string
-}
-
-type Submission struct {
-	ID        string
-	StudentId string
-	Late      bool
-	Student   Student
-}
-
-type CourseWork struct {
-	ID          string
-	Title       string
-	Submissions []*Submission
-}
-
 type ListCourseWorksRepository interface {
-	List() []*CourseWork
+	List() []*entities.CourseWork
 }
 
 type ListCourseWorksRepositoryStub struct {
 	CallsCount int
 }
 
-func (repo *ListCourseWorksRepositoryStub) List() []*CourseWork {
+func (repo *ListCourseWorksRepositoryStub) List() []*entities.CourseWork {
 	repo.CallsCount++
 	return nil
 }
@@ -52,7 +36,7 @@ func NewListCourseWorksService(repo ListCourseWorksRepository) *ListCourseWorksS
 	}
 }
 
-func (service *ListCourseWorksService) List() []*CourseWork {
+func (service *ListCourseWorksService) List() []*entities.CourseWork {
 	service.repo.List()
 	return nil
 }
