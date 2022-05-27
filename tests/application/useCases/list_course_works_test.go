@@ -41,9 +41,14 @@ func (service *ListCourseWorksService) List() ([]*entities.CourseWork, error) {
 	return service.repo.List()
 }
 
-func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
+func MakeListCourseWorksSut() (*ListCourseWorksService, *ListCourseWorksRepositoryStub) {
 	repo := NewListCourseWorksRepositoryStub()
 	listCourseWorksService := NewListCourseWorksService(repo)
+	return listCourseWorksService, repo
+}
+
+func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
+	listCourseWorksService, repo := MakeListCourseWorksSut()
 
 	listCourseWorksService.List()
 
@@ -51,8 +56,7 @@ func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
 }
 
 func TestListCourseWorks_ShouldReturnAValidList(t *testing.T) {
-	repo := NewListCourseWorksRepositoryStub()
-	listCourseWorksService := NewListCourseWorksService(repo)
+	listCourseWorksService, repo := MakeListCourseWorksSut()
 
 	courseWorks, err := listCourseWorksService.List()
 
