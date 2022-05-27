@@ -1,6 +1,7 @@
 package usecases_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/monitoring-go/src/application/protocols/repositories"
@@ -38,7 +39,11 @@ func NewListCourseWorksService(repo repositories.ListCourseWorksRepository) *Lis
 }
 
 func (service *ListCourseWorksService) List() ([]*entities.CourseWork, error) {
-	return service.repo.List()
+	courseWorks, err := service.repo.List()
+	if err != nil {
+		return nil, err
+	}
+	return courseWorks, nil
 }
 
 func MakeListCourseWorksSut() (*ListCourseWorksService, *ListCourseWorksRepositoryStub) {
@@ -62,4 +67,14 @@ func TestListCourseWorks_ShouldReturnAValidList(t *testing.T) {
 
 	require.Nil(t, err)
 	require.Equal(t, courseWorks, repo.Output)
+}
+
+func TestListCourseWorks_ShouldReturnErrorWhenRepositoryReturnsError(t *testing.T) {
+	listCourseWorksService, repo := MakeListCourseWorksSut()
+	repo.Error = errors.New("repo error")
+
+	courseWorks, err := listCourseWorksService.List()
+
+	require.Nil(t, courseWorks)
+	require.Equal(t, repo.Error, err)
 }
