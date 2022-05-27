@@ -10,15 +10,19 @@ import (
 
 type ListCourseWorksRepositoryStub struct {
 	CallsCount int
+	Output     []*entities.CourseWork
+	Error      error
 }
 
-func (repo *ListCourseWorksRepositoryStub) List() []*entities.CourseWork {
+func (repo *ListCourseWorksRepositoryStub) List() ([]*entities.CourseWork, error) {
 	repo.CallsCount++
-	return nil
+	return repo.Output, repo.Error
 }
 
 func NewListCourseWorksRepositoryStub() *ListCourseWorksRepositoryStub {
 	return &ListCourseWorksRepositoryStub{
+		Output:     []*entities.CourseWork{},
+		Error:      nil,
 		CallsCount: 0,
 	}
 }
@@ -33,9 +37,8 @@ func NewListCourseWorksService(repo repositories.ListCourseWorksRepository) *Lis
 	}
 }
 
-func (service *ListCourseWorksService) List() []*entities.CourseWork {
-	service.repo.List()
-	return nil
+func (service *ListCourseWorksService) List() ([]*entities.CourseWork, error) {
+	return service.repo.List()
 }
 
 func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
@@ -45,4 +48,14 @@ func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
 	listCourseWorksService.List()
 
 	require.Equal(t, 1, repo.CallsCount)
+}
+
+func TestListCourseWorks_ShouldReturnAValidList(t *testing.T) {
+	repo := NewListCourseWorksRepositoryStub()
+	listCourseWorksService := NewListCourseWorksService(repo)
+
+	courseWorks, err := listCourseWorksService.List()
+
+	require.Nil(t, err)
+	require.Equal(t, courseWorks, repo.Output)
 }
