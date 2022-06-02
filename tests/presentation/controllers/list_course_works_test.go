@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	domainprotocols "github.com/monitoring-go/src/domain/domain-protocols"
 	"github.com/monitoring-go/src/domain/entities"
 	httphelpers "github.com/monitoring-go/src/presentation/http-helpers"
 	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
@@ -20,10 +21,6 @@ func (service *ListCourseWorksServiceSpy) List() ([]*entities.CourseWork, error)
 	return service.Output, service.Error
 }
 
-type ListCourseWorksUseCase interface {
-	List() ([]*entities.CourseWork, error)
-}
-
 func NewListCourseWorksServiceSpy() *ListCourseWorksServiceSpy {
 	return &ListCourseWorksServiceSpy{
 		Output: []*entities.CourseWork{domain_test.MakeFakeCourseWork()},
@@ -32,7 +29,7 @@ func NewListCourseWorksServiceSpy() *ListCourseWorksServiceSpy {
 }
 
 type ListCourseWorksController struct {
-	service ListCourseWorksUseCase
+	service domainprotocols.ListCourseWorksUseCase
 }
 
 type Controller interface {
@@ -49,7 +46,7 @@ func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpR
 	return httphelpers.Ok(courseWorks)
 }
 
-func NewListCourseWorksController(service ListCourseWorksUseCase) *ListCourseWorksController {
+func NewListCourseWorksController(service domainprotocols.ListCourseWorksUseCase) *ListCourseWorksController {
 	return &ListCourseWorksController{
 		service: service,
 	}
