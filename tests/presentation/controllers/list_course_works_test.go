@@ -5,29 +5,20 @@ import (
 	"testing"
 
 	"github.com/monitoring-go/src/domain/entities"
+	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
 	domain_test "github.com/monitoring-go/tests/domain"
 	"github.com/stretchr/testify/require"
 )
 
-type HttpResponse struct {
-	Body       any
-	StatusCode int
-}
-
-type HttpRequest struct {
-	Params any
-	Body   any
-}
-
-func ServerError(err error) *HttpResponse {
-	return &HttpResponse{
+func ServerError(err error) *httpprotocols.HttpResponse {
+	return &httpprotocols.HttpResponse{
 		Body:       err,
 		StatusCode: 500,
 	}
 }
 
-func Ok(body any) *HttpResponse {
-	return &HttpResponse{
+func Ok(body any) *httpprotocols.HttpResponse {
+	return &httpprotocols.HttpResponse{
 		Body:       body,
 		StatusCode: 200,
 	}
@@ -58,10 +49,10 @@ type ListCourseWorksController struct {
 }
 
 type Controller interface {
-	Handle(request *HttpRequest) *HttpResponse
+	Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse
 }
 
-func (controller *ListCourseWorksController) Handle(request *HttpRequest) *HttpResponse {
+func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
 	courseWorks, err := controller.service.List()
 
 	if err != nil {
