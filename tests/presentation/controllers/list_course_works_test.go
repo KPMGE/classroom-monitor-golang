@@ -5,24 +5,11 @@ import (
 	"testing"
 
 	"github.com/monitoring-go/src/domain/entities"
+	httphelpers "github.com/monitoring-go/src/presentation/http-helpers"
 	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
 	domain_test "github.com/monitoring-go/tests/domain"
 	"github.com/stretchr/testify/require"
 )
-
-func ServerError(err error) *httpprotocols.HttpResponse {
-	return &httpprotocols.HttpResponse{
-		Body:       err,
-		StatusCode: 500,
-	}
-}
-
-func Ok(body any) *httpprotocols.HttpResponse {
-	return &httpprotocols.HttpResponse{
-		Body:       body,
-		StatusCode: 200,
-	}
-}
 
 type ListCourseWorksServiceSpy struct {
 	Output []*entities.CourseWork
@@ -56,10 +43,10 @@ func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpR
 	courseWorks, err := controller.service.List()
 
 	if err != nil {
-		return ServerError(err)
+		return httphelpers.ServerError(err)
 	}
 
-	return Ok(courseWorks)
+	return httphelpers.Ok(courseWorks)
 }
 
 func NewListCourseWorksController(service ListCourseWorksUseCase) *ListCourseWorksController {
