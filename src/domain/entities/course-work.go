@@ -1,9 +1,9 @@
 package entities
 
 type CourseWork struct {
-	ID          string
-	Title       string
-	Submissions []*Submission
+	ID          string        `json:"id"`
+	Title       string        `json:"title"`
+	Submissions []*Submission `json:"submissions"`
 }
 
 func NewCourseWork(id string, title string, submissions []*Submission) *CourseWork {

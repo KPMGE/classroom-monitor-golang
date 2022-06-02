@@ -1,8 +1,8 @@
 package entities
 
 type Student struct {
-	Name  string
-	Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func NewStudent(name string, email string) *Student {

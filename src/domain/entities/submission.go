@@ -1,10 +1,10 @@
 package entities
 
 type Submission struct {
-	ID        string
-	StudentId string
-	Late      bool
-	Student   *Student
+	ID        string   `json:"id"`
+	StudentId string   `json:"studentId"`
+	Late      bool     `json:"late"`
+	Student   *Student `json:"student"`
 }
 
 func NewSubmission(id string, studentId string, late bool, student *Student) *Submission {
