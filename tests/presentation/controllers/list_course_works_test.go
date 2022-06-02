@@ -32,10 +32,6 @@ type ListCourseWorksController struct {
 	service domainprotocols.ListCourseWorksUseCase
 }
 
-type Controller interface {
-	Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse
-}
-
 func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
 	courseWorks, err := controller.service.List()
 
