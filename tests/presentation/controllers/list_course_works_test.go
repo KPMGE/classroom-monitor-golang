@@ -4,10 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	domainprotocols "github.com/monitoring-go/src/domain/domain-protocols"
 	"github.com/monitoring-go/src/domain/entities"
-	httphelpers "github.com/monitoring-go/src/presentation/http-helpers"
-	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
+	"github.com/monitoring-go/src/presentation/controllers"
 	domain_test "github.com/monitoring-go/tests/domain"
 	"github.com/stretchr/testify/require"
 )
@@ -28,29 +26,9 @@ func NewListCourseWorksServiceSpy() *ListCourseWorksServiceSpy {
 	}
 }
 
-type ListCourseWorksController struct {
-	service domainprotocols.ListCourseWorksUseCase
-}
-
-func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	courseWorks, err := controller.service.List()
-
-	if err != nil {
-		return httphelpers.ServerError(err)
-	}
-
-	return httphelpers.Ok(courseWorks)
-}
-
-func NewListCourseWorksController(service domainprotocols.ListCourseWorksUseCase) *ListCourseWorksController {
-	return &ListCourseWorksController{
-		service: service,
-	}
-}
-
-func MakeListCourseWorksControllerSut() (*ListCourseWorksServiceSpy, *ListCourseWorksController) {
+func MakeListCourseWorksControllerSut() (*ListCourseWorksServiceSpy, *controllers.ListCourseWorksController) {
 	service := NewListCourseWorksServiceSpy()
-	controller := NewListCourseWorksController(service)
+	controller := controllers.NewListCourseWorksController(service)
 	return service, controller
 }
 
