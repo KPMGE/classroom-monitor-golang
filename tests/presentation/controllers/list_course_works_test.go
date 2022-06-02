@@ -68,12 +68,15 @@ func NewListCourseWorksController(service ListCourseWorksUseCase) *ListCourseWor
 	}
 }
 
-func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
+func MakeListCourseWorksControllerSut() (*ListCourseWorksServiceSpy, *ListCourseWorksController) {
 	service := NewListCourseWorksServiceSpy()
-
-	service.Error = errors.New("service error")
-
 	controller := NewListCourseWorksController(service)
+	return service, controller
+}
+
+func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
+	service, controller := MakeListCourseWorksControllerSut()
+	service.Error = errors.New("service error")
 
 	httpResponse := controller.Handle(nil)
 
