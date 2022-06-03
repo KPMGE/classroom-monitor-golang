@@ -2,12 +2,14 @@ package factories
 
 import (
 	"github.com/monitoring-go/src/application/services"
-	fakerepository "github.com/monitoring-go/src/infrastructure/repositories/fake-repository"
+	classrroomrepository "github.com/monitoring-go/src/infrastructure/repositories/classrroom-repository"
+	"github.com/monitoring-go/src/main/env"
 	"github.com/monitoring-go/src/presentation/controllers"
 )
 
 func MakeListCourseWorksController() *controllers.ListCourseWorksController {
-	repo := fakerepository.NewFakeListCourseWorksRepository()
+	env := env.GetEnvObject()
+	repo := classrroomrepository.NewClassroomRepository(env.CourseId)
 	service := services.NewListCourseWorksService(repo)
 	controller := controllers.NewListCourseWorksController(service)
 	return controller
