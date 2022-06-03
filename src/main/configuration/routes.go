@@ -1,4 +1,4 @@
-package config
+package configuration
 
 // TODO: create adapters to separate the fiber context
 
