@@ -56,11 +56,16 @@ func NewListCoursesService(repo ListCoursesRepository) *ListCoursesService {
 	}
 }
 
-func TestListCourses_ShouldReturnErrorIfRepositoryRetunsError(t *testing.T) {
+func MakeListCoursesSut() (*ListCoursesRepositoryStub, *ListCoursesService) {
 	repo := NewListCoursesRepositoryStub()
-	repo.Error = errors.New("repo error")
-
 	sut := NewListCoursesService(repo)
+
+	return repo, sut
+}
+
+func TestListCourses_ShouldReturnErrorIfRepositoryRetunsError(t *testing.T) {
+	repo, sut := MakeListCoursesSut()
+	repo.Error = errors.New("repo error")
 
 	courses, err := sut.List()
 
@@ -69,8 +74,7 @@ func TestListCourses_ShouldReturnErrorIfRepositoryRetunsError(t *testing.T) {
 }
 
 func TestListCourses_ShouldReturnValidListOfCourses(t *testing.T) {
-	repo := NewListCoursesRepositoryStub()
-	sut := NewListCoursesService(repo)
+	repo, sut := MakeListCoursesSut()
 
 	courses, err := sut.List()
 
