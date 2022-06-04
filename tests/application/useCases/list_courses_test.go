@@ -4,13 +4,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/monitoring-go/src/application/protocols/repositories"
 	"github.com/monitoring-go/src/domain/entities"
 	"github.com/stretchr/testify/require"
 )
-
-type ListCoursesRepository interface {
-	List() ([]*entities.Course, error)
-}
 
 type ListCoursesRepositoryStub struct {
 	Output []*entities.Course
@@ -28,12 +25,8 @@ func NewListCoursesRepositoryStub() *ListCoursesRepositoryStub {
 	}
 }
 
-type ListCoursesUseCase interface {
-	List() (*entities.Course, error)
-}
-
 type ListCoursesService struct {
-	repo ListCoursesRepository
+	repo repositories.ListCoursesRepository
 }
 
 func (service *ListCoursesService) List() ([]*entities.Course, error) {
@@ -46,7 +39,7 @@ func (service *ListCoursesService) List() ([]*entities.Course, error) {
 	return courses, nil
 }
 
-func NewListCoursesService(repo ListCoursesRepository) *ListCoursesService {
+func NewListCoursesService(repo repositories.ListCoursesRepository) *ListCoursesService {
 	return &ListCoursesService{
 		repo: repo,
 	}
