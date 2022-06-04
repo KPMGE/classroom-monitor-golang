@@ -16,5 +16,11 @@ func SetupRoutes(app *fiber.App) *fiber.Router {
 		return c.Status(httpResponse.StatusCode).JSON(httpResponse.Body)
 	})
 
+	api.Get("/courses", func(c *fiber.Ctx) error {
+		controller := factories.MakeListCoursesController()
+		httpResponse := controller.Handle(nil)
+		return c.Status(httpResponse.StatusCode).JSON(httpResponse.Body)
+	})
+
 	return &api
 }

@@ -5,9 +5,10 @@ import (
 	classrroomrepository "github.com/monitoring-go/src/infrastructure/repositories/classrroom-repository"
 	"github.com/monitoring-go/src/main/env"
 	"github.com/monitoring-go/src/presentation/controllers"
+	presentationprotocols "github.com/monitoring-go/src/presentation/presentation-protocols"
 )
 
-func MakeListCourseWorksController() *controllers.ListCourseWorksController {
+func MakeListCourseWorksController() presentationprotocols.Controller {
 	env := env.GetEnvObject()
 	repo := classrroomrepository.NewClassroomRepository(env.CourseId)
 	service := services.NewListCourseWorksService(repo)

@@ -71,7 +71,6 @@ func saveToken(path string, token *oauth2.Token) {
 }
 
 func GetClassroomService() *classroom.Service {
-
 	ctx := context.Background()
 	b, err := ioutil.ReadFile("credentials.json")
 	if err != nil {
