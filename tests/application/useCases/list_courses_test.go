@@ -4,43 +4,39 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/monitoring-go/src/domain/entities"
 	"github.com/stretchr/testify/require"
 )
 
-type Course struct {
-	ID    string
-	Title string
-}
-
 type ListCoursesRepository interface {
-	List() ([]*Course, error)
+	List() ([]*entities.Course, error)
 }
 
 type ListCoursesRepositoryStub struct {
-	Output []*Course
+	Output []*entities.Course
 	Error  error
 }
 
-func (repo *ListCoursesRepositoryStub) List() ([]*Course, error) {
+func (repo *ListCoursesRepositoryStub) List() ([]*entities.Course, error) {
 	return repo.Output, repo.Error
 }
 
 func NewListCoursesRepositoryStub() *ListCoursesRepositoryStub {
 	return &ListCoursesRepositoryStub{
-		Output: []*Course{},
+		Output: []*entities.Course{},
 		Error:  nil,
 	}
 }
 
 type ListCoursesUseCase interface {
-	List() (*Course, error)
+	List() (*entities.Course, error)
 }
 
 type ListCoursesService struct {
 	repo ListCoursesRepository
 }
 
-func (service *ListCoursesService) List() ([]*Course, error) {
+func (service *ListCoursesService) List() ([]*entities.Course, error) {
 	courses, err := service.repo.List()
 
 	if err != nil {
