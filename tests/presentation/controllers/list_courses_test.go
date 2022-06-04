@@ -4,29 +4,13 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/monitoring-go/src/domain/entities"
 	"github.com/monitoring-go/src/presentation/controllers"
+	mocks_test "github.com/monitoring-go/tests/presentation/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-type ListCoursesServiceStub struct {
-	Output []*entities.Course
-	Error  error
-}
-
-func NewListCoursesServiceStub() *ListCoursesServiceStub {
-	return &ListCoursesServiceStub{
-		Output: []*entities.Course{},
-		Error:  nil,
-	}
-}
-
-func (service *ListCoursesServiceStub) List() ([]*entities.Course, error) {
-	return service.Output, service.Error
-}
-
-func MakeListCoursesSut() (*ListCoursesServiceStub, *controllers.ListCoursesController) {
-	service := NewListCoursesServiceStub()
+func MakeListCoursesSut() (*mocks_test.ListCoursesServiceStub, *controllers.ListCoursesController) {
+	service := mocks_test.NewListCoursesServiceStub()
 	sut := controllers.NewListCoursesController(service)
 	return service, sut
 }
