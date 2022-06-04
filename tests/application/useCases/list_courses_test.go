@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/monitoring-go/src/application/protocols/repositories"
+	"github.com/monitoring-go/src/application/services"
 	"github.com/monitoring-go/src/domain/entities"
 	"github.com/stretchr/testify/require"
 )
@@ -25,29 +25,9 @@ func NewListCoursesRepositoryStub() *ListCoursesRepositoryStub {
 	}
 }
 
-type ListCoursesService struct {
-	repo repositories.ListCoursesRepository
-}
-
-func (service *ListCoursesService) List() ([]*entities.Course, error) {
-	courses, err := service.repo.List()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return courses, nil
-}
-
-func NewListCoursesService(repo repositories.ListCoursesRepository) *ListCoursesService {
-	return &ListCoursesService{
-		repo: repo,
-	}
-}
-
-func MakeListCoursesSut() (*ListCoursesRepositoryStub, *ListCoursesService) {
+func MakeListCoursesSut() (*ListCoursesRepositoryStub, *services.ListCoursesService) {
 	repo := NewListCoursesRepositoryStub()
-	sut := NewListCoursesService(repo)
+	sut := services.NewListCoursesService(repo)
 
 	return repo, sut
 }
