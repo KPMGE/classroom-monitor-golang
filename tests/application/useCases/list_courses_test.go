@@ -41,11 +41,13 @@ type ListCoursesService struct {
 }
 
 func (service *ListCoursesService) List() ([]*Course, error) {
-	_, err := service.repo.List()
+	courses, err := service.repo.List()
+
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	return courses, nil
 }
 
 func NewListCoursesService(repo ListCoursesRepository) *ListCoursesService {
@@ -64,4 +66,14 @@ func TestListCourses_ShouldReturnErrorIfRepositoryRetunsError(t *testing.T) {
 
 	require.Nil(t, courses)
 	require.Equal(t, repo.Error, err)
+}
+
+func TestListCourses_ShouldReturnValidListOfCourses(t *testing.T) {
+	repo := NewListCoursesRepositoryStub()
+	sut := NewListCoursesService(repo)
+
+	courses, err := sut.List()
+
+	require.Nil(t, err)
+	require.Equal(t, repo.Output, courses)
 }
