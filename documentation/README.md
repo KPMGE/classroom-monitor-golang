@@ -15,6 +15,20 @@ your classroom as follows:
 COURSE_ID=<your course id>
 ```
 
+### How to set up docker container
+You can run this application with docker, first run you've got to create build your image,
+go to the root directory and run the command: 
+
+```bash
+sudo docker build -t classroom-go-api .
+```
+
+Then, you can run a container using: 
+
+```bash
+sudo docker run --rm -it -p3333:3333 --name classroom-go classroom-go-api
+```
+
 ### How to generate api route docs.
 In order to generate your api route docs, run the following command:
 
