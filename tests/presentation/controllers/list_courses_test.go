@@ -4,10 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	domainprotocols "github.com/monitoring-go/src/domain/domain-protocols"
 	"github.com/monitoring-go/src/domain/entities"
-	httphelpers "github.com/monitoring-go/src/presentation/http-helpers"
-	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
+	"github.com/monitoring-go/src/presentation/controllers"
 	"github.com/stretchr/testify/require"
 )
 
@@ -27,29 +25,9 @@ func (service *ListCoursesServiceStub) List() ([]*entities.Course, error) {
 	return service.Output, service.Error
 }
 
-type ListCoursesController struct {
-	service domainprotocols.ListCoursesUseCase
-}
-
-func (controller *ListCoursesController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	courses, err := controller.service.List()
-
-	if err != nil {
-		return httphelpers.ServerError(err)
-	}
-
-	return httphelpers.Ok(courses)
-}
-
-func NewListCoursesController(service domainprotocols.ListCoursesUseCase) *ListCoursesController {
-	return &ListCoursesController{
-		service: service,
-	}
-}
-
-func MakeListCoursesSut() (*ListCoursesServiceStub, *ListCoursesController) {
+func MakeListCoursesSut() (*ListCoursesServiceStub, *controllers.ListCoursesController) {
 	service := NewListCoursesServiceStub()
-	sut := NewListCoursesController(service)
+	sut := controllers.NewListCoursesController(service)
 	return service, sut
 }
 
