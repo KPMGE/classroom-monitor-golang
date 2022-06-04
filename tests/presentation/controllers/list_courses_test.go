@@ -47,11 +47,15 @@ func NewListCoursesController(service domainprotocols.ListCoursesUseCase) *ListC
 	}
 }
 
-func TestListCoursesController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
+func MakeListCoursesSut() (*ListCoursesServiceStub, *ListCoursesController) {
 	service := NewListCoursesServiceStub()
-	service.Error = errors.New("service error")
-
 	sut := NewListCoursesController(service)
+	return service, sut
+}
+
+func TestListCoursesController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
+	service, sut := MakeListCoursesSut()
+	service.Error = errors.New("service error")
 
 	httpResponse := sut.Handle(nil)
 
@@ -60,9 +64,7 @@ func TestListCoursesController_ShouldReturnServerErrorIfServiceReturnsError(t *t
 }
 
 func TestListCoursesController_ShouldReturnOkOnSuccess(t *testing.T) {
-	service := NewListCoursesServiceStub()
-
-	sut := NewListCoursesController(service)
+	service, sut := MakeListCoursesSut()
 
 	httpResponse := sut.Handle(nil)
 
