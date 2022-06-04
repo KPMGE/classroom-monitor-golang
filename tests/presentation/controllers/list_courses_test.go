@@ -32,12 +32,13 @@ type ListCoursesController struct {
 }
 
 func (controller *ListCoursesController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	_, err := controller.service.List()
+	courses, err := controller.service.List()
 
 	if err != nil {
 		return httphelpers.ServerError(err)
 	}
-	return nil
+
+	return httphelpers.Ok(courses)
 }
 
 func NewListCoursesController(service domainprotocols.ListCoursesUseCase) *ListCoursesController {
@@ -56,4 +57,15 @@ func TestListCoursesController_ShouldReturnServerErrorIfServiceReturnsError(t *t
 
 	require.Equal(t, 500, httpResponse.StatusCode)
 	require.Equal(t, service.Error, httpResponse.Body)
+}
+
+func TestListCoursesController_ShouldReturnOkOnSuccess(t *testing.T) {
+	service := NewListCoursesServiceStub()
+
+	sut := NewListCoursesController(service)
+
+	httpResponse := sut.Handle(nil)
+
+	require.Equal(t, 200, httpResponse.StatusCode)
+	require.Equal(t, service.Output, httpResponse.Body)
 }
