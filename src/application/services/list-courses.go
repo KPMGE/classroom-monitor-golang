@@ -10,7 +10,7 @@ type ListCoursesService struct {
 }
 
 func (service *ListCoursesService) List() ([]*entities.Course, error) {
-	courses, err := service.repo.List()
+	courses, err := service.repo.ListCourses()
 
 	if err != nil {
 		return nil, err

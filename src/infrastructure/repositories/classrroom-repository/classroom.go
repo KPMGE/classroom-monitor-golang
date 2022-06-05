@@ -68,7 +68,31 @@ func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.Cou
 	return courseWorks, nil
 }
 
-func (repo *ClassroomRepository) List(courseId string) ([]*entities.CourseWork, error) {
+func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
+	// returns only the courses where the user is the teacher.
+	response, err := srv.Courses.List().TeacherId("me").Do()
+
+	if err != nil {
+		return nil, err
+	}
+
+	courses := []*entities.Course{}
+
+	for _, c := range response.Courses {
+		course := entities.NewCourse(c.Id, c.Name)
+		courses = append(courses, course)
+	}
+
+	return courses, nil
+}
+
+func (repo *ClassroomRepository) ListCourses() ([]*entities.Course, error) {
+	srv := GetClassroomService()
+	courses, err := GetAllCourses(srv)
+	return courses, err
+}
+
+func (repo *ClassroomRepository) ListCourseWorks(courseId string) ([]*entities.CourseWork, error) {
 	srv := GetClassroomService()
 	courseWorks, err := GetAllCourseWorks(srv, courseId)
 	return courseWorks, err
