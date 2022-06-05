@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/monitoring-go/src/presentation/controllers"
+	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
 	mocks_test "github.com/monitoring-go/tests/presentation/mocks"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +20,11 @@ func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
 	service, controller := MakeListCourseWorksControllerSut()
 	service.Error = errors.New("service error")
 
-	httpResponse := controller.Handle(nil)
+	request := &httpprotocols.HttpRequest{
+		Params: "any id",
+		Body:   nil,
+	}
+	httpResponse := controller.Handle(request)
 
 	require.Equal(t, 500, httpResponse.StatusCode)
 	require.Equal(t, service.Error, httpResponse.Body)
@@ -28,7 +33,11 @@ func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
 func TestController_ShouldReturnRightDataOnSuccess(t *testing.T) {
 	service, controller := MakeListCourseWorksControllerSut()
 
-	httpResponse := controller.Handle(nil)
+	request := &httpprotocols.HttpRequest{
+		Params: "any id",
+		Body:   nil,
+	}
+	httpResponse := controller.Handle(request)
 
 	require.Equal(t, 200, httpResponse.StatusCode)
 	require.Equal(t, service.Output, httpResponse.Body)

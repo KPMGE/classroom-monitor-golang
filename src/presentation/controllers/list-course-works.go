@@ -11,7 +11,7 @@ type ListCourseWorksController struct {
 }
 
 func (controller *ListCourseWorksController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	courseWorks, err := controller.service.List()
+	courseWorks, err := controller.service.List(request.Params.(string))
 
 	if err != nil {
 		return httphelpers.ServerError(err)

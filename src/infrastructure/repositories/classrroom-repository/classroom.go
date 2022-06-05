@@ -7,9 +7,7 @@ import (
 	"google.golang.org/api/classroom/v1"
 )
 
-type ClassroomRepository struct {
-	CourseId string
-}
+type ClassroomRepository struct{}
 
 func GetStudent(srv *classroom.Service, courseId string, studentId string) *entities.Student {
 	r, err := srv.Courses.Students.Get(courseId, studentId).Do()
@@ -62,14 +60,12 @@ func GetAllCourseWorks(srv *classroom.Service, courseId string) []*entities.Cour
 	return courseWorks
 }
 
-func (repo *ClassroomRepository) List() ([]*entities.CourseWork, error) {
+func (repo *ClassroomRepository) List(courseId string) ([]*entities.CourseWork, error) {
 	srv := GetClassroomService()
-	courseWorks := GetAllCourseWorks(srv, repo.CourseId)
+	courseWorks := GetAllCourseWorks(srv, courseId)
 	return courseWorks, nil
 }
 
-func NewClassroomRepository(courseId string) *ClassroomRepository {
-	return &ClassroomRepository{
-		CourseId: courseId,
-	}
+func NewClassroomRepository() *ClassroomRepository {
+	return &ClassroomRepository{}
 }

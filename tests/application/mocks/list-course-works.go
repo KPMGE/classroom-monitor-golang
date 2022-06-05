@@ -5,19 +5,21 @@ import (
 	domain_test "github.com/monitoring-go/tests/domain"
 )
 
-type ListCourseWorksRepositoryStub struct {
+type ListCourseWorksRepositorySpy struct {
+	Input      string
 	CallsCount int
 	Output     []*entities.CourseWork
 	Error      error
 }
 
-func (repo *ListCourseWorksRepositoryStub) List() ([]*entities.CourseWork, error) {
+func (repo *ListCourseWorksRepositorySpy) List(courseId string) ([]*entities.CourseWork, error) {
+	repo.Input = courseId
 	repo.CallsCount++
 	return repo.Output, repo.Error
 }
 
-func NewListCourseWorksRepositoryStub() *ListCourseWorksRepositoryStub {
-	return &ListCourseWorksRepositoryStub{
+func NewListCourseWorksRepositorySpy() *ListCourseWorksRepositorySpy {
+	return &ListCourseWorksRepositorySpy{
 		Output:     []*entities.CourseWork{domain_test.MakeFakeCourseWork()},
 		Error:      nil,
 		CallsCount: 0,

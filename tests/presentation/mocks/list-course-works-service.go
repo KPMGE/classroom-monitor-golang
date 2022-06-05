@@ -10,7 +10,7 @@ type ListCourseWorksServiceSpy struct {
 	Error  error
 }
 
-func (service *ListCourseWorksServiceSpy) List() ([]*entities.CourseWork, error) {
+func (service *ListCourseWorksServiceSpy) List(courseId string) ([]*entities.CourseWork, error) {
 	return service.Output, service.Error
 }
 
