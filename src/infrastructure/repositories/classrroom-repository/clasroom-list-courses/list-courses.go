@@ -9,7 +9,8 @@ import (
 type ListCoursesClassroomRepository struct{}
 
 func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
-	response, err := srv.Courses.List().Do()
+	// returns only the courses where the user is the teacher.
+	response, err := srv.Courses.List().TeacherId("me").Do()
 
 	if err != nil {
 		return nil, err
