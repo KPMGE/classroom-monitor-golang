@@ -15,3 +15,10 @@ func Ok(body any) *httpprotocols.HttpResponse {
 		StatusCode: 200,
 	}
 }
+
+func BadRequest(message string) *httpprotocols.HttpResponse {
+	return &httpprotocols.HttpResponse{
+		Body:       message,
+		StatusCode: 400,
+	}
+}

@@ -27,6 +27,16 @@ func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
 	require.Equal(t, service.Error, httpResponse.Body)
 }
 
+func TestController_ShouldReturnBadRequestIfNoCourseIdIsProvided(t *testing.T) {
+	_, controller := MakeListCourseWorksControllerSut()
+
+	fakeRequest := httpprotocols.NewHttpRequest(nil, nil)
+	httpResponse := controller.Handle(fakeRequest)
+
+	require.Equal(t, 400, httpResponse.StatusCode)
+	require.Equal(t, "Course Id not provided!", httpResponse.Body)
+}
+
 func TestController_ShouldReturnRightDataOnSuccess(t *testing.T) {
 	service, controller := MakeListCourseWorksControllerSut()
 
