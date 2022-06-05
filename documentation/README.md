@@ -7,7 +7,7 @@ your app's credentials. Just name that file __credentials.json__ and place it at
 root directory.
 
 ### How to set up docker container
-You can run this application with docker, first run you've got to create build your image,
+You can run this application with docker, first you gotta build your image,
 go to the root directory and run the command: 
 
 ```bash
