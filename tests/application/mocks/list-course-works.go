@@ -12,7 +12,7 @@ type ListCourseWorksRepositorySpy struct {
 	Error      error
 }
 
-func (repo *ListCourseWorksRepositorySpy) List(courseId string) ([]*entities.CourseWork, error) {
+func (repo *ListCourseWorksRepositorySpy) ListCourseWorks(courseId string) ([]*entities.CourseWork, error) {
 	repo.Input = courseId
 	repo.CallsCount++
 	return repo.Output, repo.Error

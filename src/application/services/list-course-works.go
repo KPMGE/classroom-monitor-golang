@@ -16,7 +16,7 @@ func NewListCourseWorksService(repo repositories.ListCourseWorksRepository) *Lis
 }
 
 func (service *ListCourseWorksService) List(courseId string) ([]*entities.CourseWork, error) {
-	courseWorks, err := service.repo.List(courseId)
+	courseWorks, err := service.repo.ListCourseWorks(courseId)
 	if err != nil {
 		return nil, err
 	}

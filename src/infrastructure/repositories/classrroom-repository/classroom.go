@@ -68,7 +68,7 @@ func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.Cou
 	return courseWorks, nil
 }
 
-func (repo *ClassroomRepository) List(courseId string) ([]*entities.CourseWork, error) {
+func (repo *ClassroomRepository) ListCourseWorks(courseId string) ([]*entities.CourseWork, error) {
 	srv := GetClassroomService()
 	courseWorks, err := GetAllCourseWorks(srv, courseId)
 	return courseWorks, err
