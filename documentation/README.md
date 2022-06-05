@@ -6,15 +6,6 @@ create an application there. After that, you can go ahead and download a __.json
 your app's credentials. Just name that file __credentials.json__ and place it at the project's
 root directory.
 
-### Setting up .env file
-For this project, it's required the use of environment variables. To do that, 
-create a __.env__ file at the project's root directory and add the course id of 
-your classroom as follows: 
-
-```bash
-COURSE_ID=<your course id>
-```
-
 ### How to set up docker container
 You can run this application with docker, first run you've got to create build your image,
 go to the root directory and run the command: 

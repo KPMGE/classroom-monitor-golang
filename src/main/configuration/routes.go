@@ -5,14 +5,18 @@ package configuration
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/monitoring-go/src/main/factories"
+	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
 )
 
 func SetupRoutes(app *fiber.App) *fiber.Router {
 	api := app.Group("/api")
 
-	api.Get("/course-works", func(c *fiber.Ctx) error {
+	api.Get("/course-works/:courseId", func(c *fiber.Ctx) error {
+		courseId := c.Params("courseId")
+
 		controller := factories.MakeListCourseWorksController()
-		httpResponse := controller.Handle(nil)
+		request := httpprotocols.NewHttpRequest(courseId, nil)
+		httpResponse := controller.Handle(request)
 		return c.Status(httpResponse.StatusCode).JSON(httpResponse.Body)
 	})
 

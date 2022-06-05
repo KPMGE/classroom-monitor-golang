@@ -22,7 +22,7 @@ func TestListCoursesController_ShouldReturnServerErrorIfServiceReturnsError(t *t
 	httpResponse := sut.Handle(nil)
 
 	require.Equal(t, 500, httpResponse.StatusCode)
-	require.Equal(t, service.Error, httpResponse.Body)
+	require.Equal(t, service.Error.Error(), httpResponse.Body)
 }
 
 func TestListCoursesController_ShouldReturnOkOnSuccess(t *testing.T) {

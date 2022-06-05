@@ -1,21 +1,17 @@
 package classrroomrepository
 
 import (
-	"log"
-
 	"github.com/monitoring-go/src/domain/entities"
 	"google.golang.org/api/classroom/v1"
 )
 
-type ClassroomRepository struct {
-	CourseId string
-}
+type ClassroomRepository struct{}
 
-func GetStudent(srv *classroom.Service, courseId string, studentId string) *entities.Student {
+func GetStudent(srv *classroom.Service, courseId string, studentId string) (*entities.Student, error) {
 	r, err := srv.Courses.Students.Get(courseId, studentId).Do()
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	name := r.Profile.Name.FullName
@@ -23,53 +19,61 @@ func GetStudent(srv *classroom.Service, courseId string, studentId string) *enti
 
 	student := entities.NewStudent(name, email)
 
-	return student
+	return student, nil
 }
 
-func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) []*entities.Submission {
+func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) ([]*entities.Submission, error) {
 	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).Do()
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	submissions := []*entities.Submission{}
 
 	for _, s := range r.StudentSubmissions {
-		student := GetStudent(srv, courseId, s.UserId)
+		student, err := GetStudent(srv, courseId, s.UserId)
+
+		if err != nil {
+			return nil, err
+		}
+
 		newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, student)
 		submissions = append(submissions, newSubmission)
 	}
 
-	return submissions
+	return submissions, nil
 }
 
-func GetAllCourseWorks(srv *classroom.Service, courseId string) []*entities.CourseWork {
+func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.CourseWork, error) {
 	r, err := srv.Courses.CourseWork.List(courseId).Do()
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	courseWorks := []*entities.CourseWork{}
 
 	for _, c := range r.CourseWork {
-		submissions := GetAllStudentSubmissions(srv, courseId, c.Id)
+		submissions, err := GetAllStudentSubmissions(srv, courseId, c.Id)
+
+		if err != nil {
+			return nil, err
+		}
+
 		courseWork := entities.NewCourseWork(c.Id, c.Title, submissions)
 		courseWorks = append(courseWorks, courseWork)
 	}
 
-	return courseWorks
-}
-
-func (repo *ClassroomRepository) List() ([]*entities.CourseWork, error) {
-	srv := GetClassroomService()
-	courseWorks := GetAllCourseWorks(srv, repo.CourseId)
 	return courseWorks, nil
 }
 
-func NewClassroomRepository(courseId string) *ClassroomRepository {
-	return &ClassroomRepository{
-		CourseId: courseId,
-	}
+func (repo *ClassroomRepository) List(courseId string) ([]*entities.CourseWork, error) {
+	srv := GetClassroomService()
+	courseWorks, err := GetAllCourseWorks(srv, courseId)
+	return courseWorks, err
+}
+
+func NewClassroomRepository() *ClassroomRepository {
+	return &ClassroomRepository{}
 }

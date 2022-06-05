@@ -9,24 +9,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func MakeListCourseWorksSut() (*services.ListCourseWorksService, *mocks_test.ListCourseWorksRepositoryStub) {
-	repo := mocks_test.NewListCourseWorksRepositoryStub()
+func MakeListCourseWorksSut() (*services.ListCourseWorksService, *mocks_test.ListCourseWorksRepositorySpy) {
+	repo := mocks_test.NewListCourseWorksRepositorySpy()
 	listCourseWorksService := services.NewListCourseWorksService(repo)
 	return listCourseWorksService, repo
 }
 
-func TestListCourseWorks_ShouldCallRepository(t *testing.T) {
+func TestListCourseWorks_ShouldCallRepositoryWithRightData(t *testing.T) {
 	listCourseWorksService, repo := MakeListCourseWorksSut()
 
-	listCourseWorksService.List()
+	listCourseWorksService.List("any course id")
 
 	require.Equal(t, 1, repo.CallsCount)
+	require.Equal(t, "any course id", repo.Input)
 }
 
 func TestListCourseWorks_ShouldReturnAValidList(t *testing.T) {
 	listCourseWorksService, repo := MakeListCourseWorksSut()
 
-	courseWorks, err := listCourseWorksService.List()
+	courseWorks, err := listCourseWorksService.List("any course id")
 
 	require.Nil(t, err)
 	require.Equal(t, courseWorks, repo.Output)
@@ -36,7 +37,7 @@ func TestListCourseWorks_ShouldReturnErrorWhenRepositoryReturnsError(t *testing.
 	listCourseWorksService, repo := MakeListCourseWorksSut()
 	repo.Error = errors.New("repo error")
 
-	courseWorks, err := listCourseWorksService.List()
+	courseWorks, err := listCourseWorksService.List("any course id")
 
 	require.Nil(t, courseWorks)
 	require.Equal(t, repo.Error, err)
