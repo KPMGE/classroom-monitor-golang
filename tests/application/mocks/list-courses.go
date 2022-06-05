@@ -7,7 +7,7 @@ type ListCoursesRepositoryStub struct {
 	Error  error
 }
 
-func (repo *ListCoursesRepositoryStub) List() ([]*entities.Course, error) {
+func (repo *ListCoursesRepositoryStub) ListCourses() ([]*entities.Course, error) {
 	return repo.Output, repo.Error
 }
 

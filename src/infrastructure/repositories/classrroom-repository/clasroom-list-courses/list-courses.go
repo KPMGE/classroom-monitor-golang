@@ -26,7 +26,7 @@ func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
 	return courses, nil
 }
 
-func (repo *ListCoursesClassroomRepository) List() ([]*entities.Course, error) {
+func (repo *ListCoursesClassroomRepository) ListCourses() ([]*entities.Course, error) {
 	srv := classrroomrepository.GetClassroomService()
 	courses, err := GetAllCourses(srv)
 	return courses, err
