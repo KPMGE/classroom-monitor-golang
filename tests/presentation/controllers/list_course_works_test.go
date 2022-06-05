@@ -20,11 +20,8 @@ func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
 	service, controller := MakeListCourseWorksControllerSut()
 	service.Error = errors.New("service error")
 
-	request := &httpprotocols.HttpRequest{
-		Params: "any id",
-		Body:   nil,
-	}
-	httpResponse := controller.Handle(request)
+	fakeRequest := httpprotocols.NewHttpRequest("any course id", nil)
+	httpResponse := controller.Handle(fakeRequest)
 
 	require.Equal(t, 500, httpResponse.StatusCode)
 	require.Equal(t, service.Error, httpResponse.Body)
@@ -33,11 +30,8 @@ func TestController_ShouldReturnServerErrorIfServiceReturnsError(t *testing.T) {
 func TestController_ShouldReturnRightDataOnSuccess(t *testing.T) {
 	service, controller := MakeListCourseWorksControllerSut()
 
-	request := &httpprotocols.HttpRequest{
-		Params: "any id",
-		Body:   nil,
-	}
-	httpResponse := controller.Handle(request)
+	fakeRequest := httpprotocols.NewHttpRequest("any course id", nil)
+	httpResponse := controller.Handle(fakeRequest)
 
 	require.Equal(t, 200, httpResponse.StatusCode)
 	require.Equal(t, service.Output, httpResponse.Body)
