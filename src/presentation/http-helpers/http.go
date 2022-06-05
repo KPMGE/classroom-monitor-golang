@@ -4,7 +4,7 @@ import httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
 
 func ServerError(err error) *httpprotocols.HttpResponse {
 	return &httpprotocols.HttpResponse{
-		Body:       err,
+		Body:       err.Error(),
 		StatusCode: 500,
 	}
 }
