@@ -17,7 +17,7 @@ sudo docker build -t classroom-go-api .
 Then, you can run a container using: 
 
 ```bash
-sudo docker run --rm -it -p3333:3333 --name classroom-go classroom-go-api
+sudo docker run -it -p3333:3333 --name classroom-go classroom-go-api
 ```
 
 ### How to generate api route docs.
