@@ -5,15 +5,10 @@ import (
 	"testing"
 
 	"github.com/monitoring-go/src/domain/entities"
-	httphelpers "github.com/monitoring-go/src/presentation/http-helpers"
-	httpprotocols "github.com/monitoring-go/src/presentation/http-protocols"
+	"github.com/monitoring-go/src/presentation/controllers"
 	domain_test "github.com/monitoring-go/tests/domain"
 	"github.com/stretchr/testify/require"
 )
-
-type ListStudentsUseCase interface {
-	List() ([]*entities.Student, error)
-}
 
 type ListStudentsServiceMock struct {
 	Output []*entities.Student
@@ -31,27 +26,9 @@ func NewListStudentsServiceMock() *ListStudentsServiceMock {
 	}
 }
 
-type ListStudentsController struct {
-	service ListStudentsUseCase
-}
-
-func (controller *ListStudentsController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	students, err := controller.service.List()
-	if err != nil {
-		return httphelpers.ServerError(err)
-	}
-	return httphelpers.Ok(students)
-}
-
-func NewListStudentsController(service ListStudentsUseCase) *ListStudentsController {
-	return &ListStudentsController{
-		service: service,
-	}
-}
-
-func MakeListStudentsControllerSut() (*ListStudentsServiceMock, *ListStudentsController) {
+func MakeListStudentsControllerSut() (*ListStudentsServiceMock, *controllers.ListStudentsController) {
 	service := NewListStudentsServiceMock()
-	sut := NewListStudentsController(service)
+	sut := controllers.NewListStudentsController(service)
 	return service, sut
 }
 
