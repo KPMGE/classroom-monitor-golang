@@ -11,7 +11,7 @@ type ListStudentsRepositoryMock struct {
 	CallsCount int
 }
 
-func (repo *ListStudentsRepositoryMock) List() ([]*entities.Student, error) {
+func (repo *ListStudentsRepositoryMock) ListStudents() ([]*entities.Student, error) {
 	repo.CallsCount++
 	return repo.Output, repo.Error
 }
