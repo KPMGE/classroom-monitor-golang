@@ -36,11 +36,11 @@ type ListStudentsController struct {
 }
 
 func (controller *ListStudentsController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	_, err := controller.service.List()
+	students, err := controller.service.List()
 	if err != nil {
 		return httphelpers.ServerError(err)
 	}
-	return nil
+	return httphelpers.Ok(students)
 }
 
 func NewListStudentsController(service ListStudentsUseCase) *ListStudentsController {
@@ -58,4 +58,14 @@ func TestListStudentsController_ShouldReturnServerErrorWhenServiceReturnsError(t
 
 	require.Equal(t, 500, httpResponse.StatusCode)
 	require.Equal(t, service.Error.Error(), httpResponse.Body)
+}
+
+func TestListStudentsController_ShouldReturnOkaOnSuccess(t *testing.T) {
+	service := NewListStudentsServiceMock()
+	sut := NewListStudentsController(service)
+
+	httpResponse := sut.Handle(nil)
+
+	require.Equal(t, 200, httpResponse.StatusCode)
+	require.Equal(t, service.Output, httpResponse.Body)
 }
