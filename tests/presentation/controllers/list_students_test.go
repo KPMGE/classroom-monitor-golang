@@ -4,30 +4,13 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/monitoring-go/src/domain/entities"
 	"github.com/monitoring-go/src/presentation/controllers"
-	domain_test "github.com/monitoring-go/tests/domain"
+	mocks_test "github.com/monitoring-go/tests/presentation/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-type ListStudentsServiceMock struct {
-	Output []*entities.Student
-	Error  error
-}
-
-func (service *ListStudentsServiceMock) List() ([]*entities.Student, error) {
-	return service.Output, service.Error
-}
-
-func NewListStudentsServiceMock() *ListStudentsServiceMock {
-	return &ListStudentsServiceMock{
-		Output: []*entities.Student{domain_test.MakeFakeStudent()},
-		Error:  nil,
-	}
-}
-
-func MakeListStudentsControllerSut() (*ListStudentsServiceMock, *controllers.ListStudentsController) {
-	service := NewListStudentsServiceMock()
+func MakeListStudentsControllerSut() (*mocks_test.ListStudentsServiceMock, *controllers.ListStudentsController) {
+	service := mocks_test.NewListStudentsServiceMock()
 	sut := controllers.NewListStudentsController(service)
 	return service, sut
 }
