@@ -49,9 +49,14 @@ func NewListStudentsController(service ListStudentsUseCase) *ListStudentsControl
 	}
 }
 
-func TestListStudentsController_ShouldReturnServerErrorWhenServiceReturnsError(t *testing.T) {
+func MakeListStudentsControllerSut() (*ListStudentsServiceMock, *ListStudentsController) {
 	service := NewListStudentsServiceMock()
 	sut := NewListStudentsController(service)
+	return service, sut
+}
+
+func TestListStudentsController_ShouldReturnServerErrorWhenServiceReturnsError(t *testing.T) {
+	service, sut := MakeListStudentsControllerSut()
 	service.Error = errors.New("service error")
 
 	httpResponse := sut.Handle(nil)
