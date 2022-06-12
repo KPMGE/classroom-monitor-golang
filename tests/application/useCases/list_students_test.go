@@ -42,10 +42,14 @@ func NewListStudentService(repo ListStudentsRepository) *ListStudentsService {
 	}
 }
 
-func TestListStudents_ShouldCallRepositoyOnlyOnce(t *testing.T) {
+func MakeListStudentsSut() (*ListStudentsRepositoryMock, *ListStudentsService) {
 	repo := NewListStudentsRepositoryMock()
 	sut := NewListStudentService(repo)
+	return repo, sut
+}
 
+func TestListStudents_ShouldCallRepositoyOnlyOnce(t *testing.T) {
+	repo, sut := MakeListStudentsSut()
 	sut.List()
 
 	require.Equal(t, 1, repo.CallsCount)
