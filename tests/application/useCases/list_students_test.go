@@ -1,6 +1,7 @@
 package usecases_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/monitoring-go/src/domain/entities"
@@ -14,18 +15,20 @@ type ListStudentsRepository interface {
 
 type ListStudentsRepositoryMock struct {
 	Output     []*entities.Student
+	Error      error
 	CallsCount int
 }
 
 func (repo *ListStudentsRepositoryMock) List() ([]*entities.Student, error) {
 	repo.CallsCount++
-	return repo.Output, nil
+	return repo.Output, repo.Error
 }
 
 func NewListStudentsRepositoryMock() *ListStudentsRepositoryMock {
 	return &ListStudentsRepositoryMock{
 		CallsCount: 0,
 		Output:     []*entities.Student{domain_test.MakeFakeStudent()},
+		Error:      nil,
 	}
 }
 
@@ -34,7 +37,10 @@ type ListStudentsService struct {
 }
 
 func (service *ListStudentsService) List() ([]*entities.Student, error) {
-	students, _ := service.repo.List()
+	students, err := service.repo.List()
+	if err != nil {
+		return nil, err
+	}
 	return students, nil
 }
 
@@ -64,4 +70,14 @@ func TestListStudents_ShouldReturnAValidStudentList(t *testing.T) {
 
 	require.Nil(t, err)
 	require.Equal(t, repo.Output, students)
+}
+
+func TestListStudents_ShouldReturnErrorWhenRepositoryReturnsError(t *testing.T) {
+	repo, sut := MakeListStudentsSut()
+	repo.Error = errors.New("repo error")
+
+	students, err := sut.List()
+
+	require.Nil(t, students)
+	require.Equal(t, repo.Error, err)
 }
