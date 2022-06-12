@@ -4,14 +4,11 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/monitoring-go/src/application/protocols/repositories"
 	"github.com/monitoring-go/src/domain/entities"
 	domain_test "github.com/monitoring-go/tests/domain"
 	"github.com/stretchr/testify/require"
 )
-
-type ListStudentsRepository interface {
-	List() ([]*entities.Student, error)
-}
 
 type ListStudentsRepositoryMock struct {
 	Output     []*entities.Student
@@ -33,7 +30,7 @@ func NewListStudentsRepositoryMock() *ListStudentsRepositoryMock {
 }
 
 type ListStudentsService struct {
-	repo ListStudentsRepository
+	repo repositories.ListStudentsRepository
 }
 
 func (service *ListStudentsService) List() ([]*entities.Student, error) {
@@ -44,7 +41,7 @@ func (service *ListStudentsService) List() ([]*entities.Student, error) {
 	return students, nil
 }
 
-func NewListStudentService(repo ListStudentsRepository) *ListStudentsService {
+func NewListStudentService(repo repositories.ListStudentsRepository) *ListStudentsService {
 	return &ListStudentsService{
 		repo: repo,
 	}
