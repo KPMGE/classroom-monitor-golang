@@ -23,7 +23,7 @@ func GetStudent(srv *classroom.Service, courseId string, studentId string) (*ent
 }
 
 func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) ([]*entities.Submission, error) {
-	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).Do()
+	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).States("TURNED_IN").Do()
 
 	if err != nil {
 		return nil, err
