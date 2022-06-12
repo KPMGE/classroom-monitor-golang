@@ -5,32 +5,12 @@ import (
 	"testing"
 
 	"github.com/monitoring-go/src/application/services"
-	"github.com/monitoring-go/src/domain/entities"
-	domain_test "github.com/monitoring-go/tests/domain"
+	mocks_test "github.com/monitoring-go/tests/application/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-type ListStudentsRepositoryMock struct {
-	Output     []*entities.Student
-	Error      error
-	CallsCount int
-}
-
-func (repo *ListStudentsRepositoryMock) List() ([]*entities.Student, error) {
-	repo.CallsCount++
-	return repo.Output, repo.Error
-}
-
-func NewListStudentsRepositoryMock() *ListStudentsRepositoryMock {
-	return &ListStudentsRepositoryMock{
-		CallsCount: 0,
-		Output:     []*entities.Student{domain_test.MakeFakeStudent()},
-		Error:      nil,
-	}
-}
-
-func MakeListStudentsSut() (*ListStudentsRepositoryMock, *services.ListStudentsService) {
-	repo := NewListStudentsRepositoryMock()
+func MakeListStudentsSut() (*mocks_test.ListStudentsRepositoryMock, *services.ListStudentsService) {
+	repo := mocks_test.NewListStudentsRepositoryMock()
 	sut := services.NewListStudentService(repo)
 	return repo, sut
 }
