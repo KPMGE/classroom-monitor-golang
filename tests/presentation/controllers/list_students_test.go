@@ -66,8 +66,7 @@ func TestListStudentsController_ShouldReturnServerErrorWhenServiceReturnsError(t
 }
 
 func TestListStudentsController_ShouldReturnOkaOnSuccess(t *testing.T) {
-	service := NewListStudentsServiceMock()
-	sut := NewListStudentsController(service)
+	service, sut := MakeListStudentsControllerSut()
 
 	httpResponse := sut.Handle(nil)
 
