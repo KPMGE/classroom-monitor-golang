@@ -46,7 +46,7 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 }
 
 func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.CourseWork, error) {
-	r, err := srv.Courses.CourseWork.List(courseId).Do()
+	r, err := srv.Courses.CourseWork.List(courseId).OrderBy("dueDate asc").Do()
 
 	if err != nil {
 		return nil, err
