@@ -27,6 +27,17 @@ func TestListStudentsController_ShouldReturnServerErrorWhenServiceReturnsError(t
 	require.Equal(t, service.Error.Error(), httpResponse.Body)
 }
 
+func TestListStudentsController_ShouldReturnBadRequestIfNoIdIsProvided(t *testing.T) {
+	service, sut := MakeListStudentsControllerSut()
+	service.Error = errors.New("service error")
+
+	request := httpprotocols.NewHttpRequest(nil, nil)
+	httpResponse := sut.Handle(request)
+
+	require.Equal(t, 400, httpResponse.StatusCode)
+	require.Equal(t, "Course Id not provided!", httpResponse.Body)
+}
+
 func TestListStudentsController_ShouldReturnOkaOnSuccess(t *testing.T) {
 	service, sut := MakeListStudentsControllerSut()
 
