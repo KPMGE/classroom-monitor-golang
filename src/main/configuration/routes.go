@@ -26,5 +26,13 @@ func SetupRoutes(app *fiber.App) *fiber.Router {
 		return c.Status(httpResponse.StatusCode).JSON(httpResponse.Body)
 	})
 
+	api.Get("/students/:courseId", func(c *fiber.Ctx) error {
+		courseId := c.Params("courseId")
+		request := httpprotocols.NewHttpRequest(courseId, nil)
+		controller := factories.MakeListStudentsController()
+		httpResponse := controller.Handle(request)
+		return c.Status(httpResponse.StatusCode).JSON(httpResponse.Body)
+	})
+
 	return &api
 }

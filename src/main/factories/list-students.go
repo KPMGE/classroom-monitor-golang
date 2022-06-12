@@ -7,7 +7,7 @@ import (
 	presentationprotocols "github.com/monitoring-go/src/presentation/presentation-protocols"
 )
 
-func NewListStudentsController() presentationprotocols.Controller {
+func MakeListStudentsController() presentationprotocols.Controller {
 	repo := classrroomrepository.NewClassroomRepository()
 	service := services.NewListStudentService(repo)
 	controller := controllers.NewListStudentsController(service)
