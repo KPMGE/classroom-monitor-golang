@@ -9,8 +9,8 @@ type ListStudentsService struct {
 	repo repositories.ListStudentsRepository
 }
 
-func (service *ListStudentsService) List() ([]*entities.Student, error) {
-	students, err := service.repo.ListStudents()
+func (service *ListStudentsService) List(courseId string) ([]*entities.Student, error) {
+	students, err := service.repo.ListStudents(courseId)
 	if err != nil {
 		return nil, err
 	}

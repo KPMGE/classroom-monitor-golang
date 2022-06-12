@@ -11,7 +11,14 @@ type ListStudentsController struct {
 }
 
 func (controller *ListStudentsController) Handle(request *httpprotocols.HttpRequest) *httpprotocols.HttpResponse {
-	students, err := controller.service.List()
+	courseId := request.Params
+
+	if courseId == nil {
+		return httphelpers.BadRequest("Course Id not provided!")
+	}
+
+	students, err := controller.service.List(courseId.(string))
+
 	if err != nil {
 		return httphelpers.ServerError(err)
 	}

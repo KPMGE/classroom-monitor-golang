@@ -10,7 +10,7 @@ type ListStudentsServiceMock struct {
 	Error  error
 }
 
-func (service *ListStudentsServiceMock) List() ([]*entities.Student, error) {
+func (service *ListStudentsServiceMock) List(courseId string) ([]*entities.Student, error) {
 	return service.Output, service.Error
 }
 
