@@ -29,21 +29,32 @@ func getClient(config *oauth2.Config) *http.Client {
 	return config.Client(context.Background(), tok)
 }
 
+// handle the auth-code returned from google
+func handleCode(authCode chan string) {
+	fmt.Println("Waiting for the user confirmation...")
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		authCode <- r.FormValue("code")
+		fmt.Fprintf(w, "You may close this window now!")
+	})
+	http.ListenAndServe(":3333", nil)
+}
+
 // Request a token from the web, then returns the retrieved token.
 func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
-		"authorization code: \n%v\n", authURL)
+	fmt.Printf("Allow the application accessing the link: \n%v\n", authURL)
 
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("Unable to read authorization code: %v", err)
-	}
+	authCode := make(chan string)
 
-	tok, err := config.Exchange(context.TODO(), authCode)
+	// runs code handler concurrently
+	go handleCode(authCode)
+
+	// exchanges the authorization token
+	tok, err := config.Exchange(context.TODO(), <-authCode)
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web: %v", err)
 	}
+
 	return tok
 }
 
