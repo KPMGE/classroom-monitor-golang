@@ -8,7 +8,7 @@ import (
 type ClassroomRepository struct{}
 
 func GetStudent(srv *classroom.Service, courseId string, studentId string) (*entities.Student, error) {
-	r, err := srv.Courses.Students.Get(courseId, studentId).Do()
+	r, err := srv.Courses.Students.Get(courseId, studentId).Fields("userId,profile.emailAddress,profile.name.fullName").Do()
 
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func GetStudent(srv *classroom.Service, courseId string, studentId string) (*ent
 }
 
 func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) ([]*entities.Submission, error) {
-	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).States("TURNED_IN").Do()
+	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).States("TURNED_IN").Fields("studentSubmissions.id,studentSubmissions.late,studentSubmissions.userId").Do()
 
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 }
 
 func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.CourseWork, error) {
-	r, err := srv.Courses.CourseWork.List(courseId).OrderBy("dueDate asc").Do()
+	r, err := srv.Courses.CourseWork.List(courseId).OrderBy("dueDate asc").Fields("courseWork.id,courseWork.title").Do()
 
 	if err != nil {
 		return nil, err
