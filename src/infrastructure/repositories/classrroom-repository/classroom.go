@@ -16,8 +16,9 @@ func GetStudent(srv *classroom.Service, courseId string, studentId string) (*ent
 
 	name := r.Profile.Name.FullName
 	email := r.Profile.EmailAddress
+	id := r.UserId
 
-	student := entities.NewStudent(name, email)
+	student := entities.NewStudent(name, email, id)
 
 	return student, nil
 }
@@ -96,7 +97,7 @@ func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Studen
 	students := []*entities.Student{}
 
 	for _, s := range response.Students {
-		student := entities.NewStudent(s.Profile.Name.FullName, s.Profile.EmailAddress)
+		student := entities.NewStudent(s.Profile.Name.FullName, s.Profile.EmailAddress, s.UserId)
 		students = append(students, student)
 	}
 	return students, nil
