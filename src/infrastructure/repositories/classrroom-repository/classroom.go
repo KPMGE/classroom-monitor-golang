@@ -45,16 +45,13 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 	}
 
 	for _, s := range r.StudentSubmissions {
-		var student *entities.Student
-
 		for _, st := range allStudents {
 			if st.ID == s.UserId {
-				student = st
+				newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, st)
+				submissions = append(submissions, newSubmission)
 			}
 		}
 
-		newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, student)
-		submissions = append(submissions, newSubmission)
 	}
 
 	return submissions, nil
