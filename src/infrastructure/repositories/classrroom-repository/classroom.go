@@ -8,7 +8,10 @@ import (
 type ClassroomRepository struct{}
 
 func GetStudent(srv *classroom.Service, courseId string, studentId string) (*entities.Student, error) {
-	r, err := srv.Courses.Students.Get(courseId, studentId).Fields("userId,profile.emailAddress,profile.name.fullName").Do()
+	r, err := srv.Courses.Students.
+		Get(courseId, studentId).
+		Fields("userId,profile.emailAddress,profile.name.fullName").
+		Do()
 
 	if err != nil {
 		return nil, err
@@ -16,14 +19,19 @@ func GetStudent(srv *classroom.Service, courseId string, studentId string) (*ent
 
 	name := r.Profile.Name.FullName
 	email := r.Profile.EmailAddress
+	id := r.UserId
 
-	student := entities.NewStudent(name, email)
+	student := entities.NewStudent(name, email, id)
 
 	return student, nil
 }
 
 func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) ([]*entities.Submission, error) {
-	r, err := srv.Courses.CourseWork.StudentSubmissions.List(courseId, courseWorkId).States("TURNED_IN").Fields("studentSubmissions.id,studentSubmissions.late,studentSubmissions.userId").Do()
+	r, err := srv.Courses.CourseWork.StudentSubmissions.
+		List(courseId, courseWorkId).
+		States("TURNED_IN").
+		Fields("studentSubmissions.id,studentSubmissions.late,studentSubmissions.userId").
+		Do()
 
 	if err != nil {
 		return nil, err
@@ -31,11 +39,16 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 
 	submissions := []*entities.Submission{}
 
-	for _, s := range r.StudentSubmissions {
-		student, err := GetStudent(srv, courseId, s.UserId)
+	allStudents, err := GetAllStudents(srv, courseId)
+	if err != nil {
+		return nil, err
+	}
 
-		if err != nil {
-			return nil, err
+	for _, s := range r.StudentSubmissions {
+		var student *entities.Student
+
+		for _, st := range allStudents {
+			student = st
 		}
 
 		newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, student)
@@ -46,7 +59,11 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 }
 
 func GetAllCourseWorks(srv *classroom.Service, courseId string) ([]*entities.CourseWork, error) {
-	r, err := srv.Courses.CourseWork.List(courseId).OrderBy("dueDate asc").Fields("courseWork.id,courseWork.title").Do()
+	r, err := srv.Courses.CourseWork.
+		List(courseId).
+		OrderBy("dueDate asc").
+		Fields("courseWork.id,courseWork.title").
+		Do()
 
 	if err != nil {
 		return nil, err
@@ -96,7 +113,7 @@ func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Studen
 	students := []*entities.Student{}
 
 	for _, s := range response.Students {
-		student := entities.NewStudent(s.Profile.Name.FullName, s.Profile.EmailAddress)
+		student := entities.NewStudent(s.Profile.Name.FullName, s.Profile.EmailAddress, s.Profile.Id)
 		students = append(students, student)
 	}
 	return students, nil
