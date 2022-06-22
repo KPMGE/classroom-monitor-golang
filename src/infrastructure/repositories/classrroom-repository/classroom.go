@@ -39,20 +39,18 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 
 	submissions := []*entities.Submission{}
 
-	allStudents, err := GetAllStudents(srv, courseId)
+	allStudents, err := GetAllStudents(srv, courseId, []*entities.Student{}, "")
 	if err != nil {
 		return nil, err
 	}
 
-	for _, s := range r.StudentSubmissions {
-		var student *entities.Student
-
-		for _, st := range allStudents {
-			student = st
+	for _, submission := range r.StudentSubmissions {
+		for _, student := range allStudents {
+			if student.ID == submission.UserId {
+				newSubmission := entities.NewSubmission(submission.Id, submission.Late, student)
+				submissions = append(submissions, newSubmission)
+			}
 		}
-
-		newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, student)
-		submissions = append(submissions, newSubmission)
 	}
 
 	return submissions, nil
@@ -103,25 +101,27 @@ func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
 	return courses, nil
 }
 
-func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Student, error) {
-	response, err := srv.Courses.Students.List(courseId).Do()
-
+func GetAllStudents(srv *classroom.Service, courseId string, students []*entities.Student, nextPageToken string) ([]*entities.Student, error) {
+	response, err := srv.Courses.Students.List(courseId).PageToken(nextPageToken).Do()
 	if err != nil {
 		return nil, err
 	}
 
-	students := []*entities.Student{}
-
 	for _, s := range response.Students {
-		student := entities.NewStudent(s.Profile.Name.FullName, s.Profile.EmailAddress, s.Profile.Id)
+		student := entities.NewStudent(s.Profile.Id, s.Profile.Name.FullName, s.Profile.EmailAddress)
 		students = append(students, student)
 	}
+
+	if response.NextPageToken != "" {
+		return GetAllStudents(srv, courseId, students, response.NextPageToken)
+	}
+
 	return students, nil
 }
 
 func (repo *ClassroomRepository) ListStudents(courseId string) ([]*entities.Student, error) {
 	srv := GetClassroomService()
-	students, err := GetAllStudents(srv, courseId)
+	students, err := GetAllStudents(srv, courseId, []*entities.Student{}, "")
 	return students, err
 }
 
