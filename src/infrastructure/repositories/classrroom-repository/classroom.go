@@ -39,7 +39,7 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 
 	submissions := []*entities.Submission{}
 
-	allStudents, err := GetAllStudents(srv, courseId)
+	allStudents, err := GetAllStudents(srv, courseId, []*entities.Student{}, "")
 	if err != nil {
 		return nil, err
 	}
@@ -101,34 +101,11 @@ func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
 	return courses, nil
 }
 
-func GetRecursive(srv *classroom.Service, courseId string, students []*entities.Student, nextPageToken string) ([]*entities.Student, error) {
+func GetAllStudents(srv *classroom.Service, courseId string, students []*entities.Student, nextPageToken string) ([]*entities.Student, error) {
 	response, err := srv.Courses.Students.List(courseId).PageToken(nextPageToken).Do()
 	if err != nil {
 		return nil, err
 	}
-
-	localStudents := []*entities.Student{}
-
-	for _, s := range response.Students {
-		student := entities.NewStudent(s.Profile.Id, s.Profile.Name.FullName, s.Profile.EmailAddress)
-		localStudents = append(localStudents, student)
-	}
-
-	if response.NextPageToken != "" {
-		return GetRecursive(srv, courseId, localStudents, response.NextPageToken)
-	}
-
-	return localStudents, nil
-}
-
-func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Student, error) {
-	response, err := srv.Courses.Students.List(courseId).Do()
-
-	if err != nil {
-		return nil, err
-	}
-
-	students := []*entities.Student{}
 
 	for _, s := range response.Students {
 		student := entities.NewStudent(s.Profile.Id, s.Profile.Name.FullName, s.Profile.EmailAddress)
@@ -136,15 +113,7 @@ func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Studen
 	}
 
 	if response.NextPageToken != "" {
-		remain, err := GetRecursive(srv, courseId, []*entities.Student{}, response.NextPageToken)
-
-		if err != nil {
-			return nil, err
-		}
-
-		for _, st := range remain {
-			students = append(students, st)
-		}
+		return GetAllStudents(srv, courseId, students, response.NextPageToken)
 	}
 
 	return students, nil
@@ -152,7 +121,7 @@ func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Studen
 
 func (repo *ClassroomRepository) ListStudents(courseId string) ([]*entities.Student, error) {
 	srv := GetClassroomService()
-	students, err := GetAllStudents(srv, courseId)
+	students, err := GetAllStudents(srv, courseId, []*entities.Student{}, "")
 	return students, err
 }
 
