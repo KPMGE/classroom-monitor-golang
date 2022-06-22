@@ -44,14 +44,13 @@ func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWor
 		return nil, err
 	}
 
-	for _, s := range r.StudentSubmissions {
-		for _, st := range allStudents {
-			if st.ID == s.UserId {
-				newSubmission := entities.NewSubmission(s.Id, s.UserId, s.Late, st)
+	for _, submission := range r.StudentSubmissions {
+		for _, student := range allStudents {
+			if student.ID == submission.UserId {
+				newSubmission := entities.NewSubmission(submission.Id, submission.Late, student)
 				submissions = append(submissions, newSubmission)
 			}
 		}
-
 	}
 
 	return submissions, nil
@@ -102,6 +101,26 @@ func GetAllCourses(srv *classroom.Service) ([]*entities.Course, error) {
 	return courses, nil
 }
 
+func GetRecursive(srv *classroom.Service, courseId string, students []*entities.Student, nextPageToken string) ([]*entities.Student, error) {
+	response, err := srv.Courses.Students.List(courseId).PageToken(nextPageToken).Do()
+	if err != nil {
+		return nil, err
+	}
+
+	localStudents := []*entities.Student{}
+
+	for _, s := range response.Students {
+		student := entities.NewStudent(s.Profile.Id, s.Profile.Name.FullName, s.Profile.EmailAddress)
+		localStudents = append(localStudents, student)
+	}
+
+	if response.NextPageToken != "" {
+		return GetRecursive(srv, courseId, localStudents, response.NextPageToken)
+	}
+
+	return localStudents, nil
+}
+
 func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Student, error) {
 	response, err := srv.Courses.Students.List(courseId).Do()
 
@@ -115,6 +134,19 @@ func GetAllStudents(srv *classroom.Service, courseId string) ([]*entities.Studen
 		student := entities.NewStudent(s.Profile.Id, s.Profile.Name.FullName, s.Profile.EmailAddress)
 		students = append(students, student)
 	}
+
+	if response.NextPageToken != "" {
+		remain, err := GetRecursive(srv, courseId, []*entities.Student{}, response.NextPageToken)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for _, st := range remain {
+			students = append(students, st)
+		}
+	}
+
 	return students, nil
 }
 
