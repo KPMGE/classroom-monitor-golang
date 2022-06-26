@@ -7,25 +7,6 @@ import (
 
 type ClassroomRepository struct{}
 
-func GetStudent(srv *classroom.Service, courseId string, studentId string) (*entities.Student, error) {
-	r, err := srv.Courses.Students.
-		Get(courseId, studentId).
-		Fields("userId,profile.emailAddress,profile.name.fullName").
-		Do()
-
-	if err != nil {
-		return nil, err
-	}
-
-	name := r.Profile.Name.FullName
-	email := r.Profile.EmailAddress
-	id := r.UserId
-
-	student := entities.NewStudent(name, email, id)
-
-	return student, nil
-}
-
 func GetAllStudentSubmissions(srv *classroom.Service, courseId string, courseWorkId string) ([]*entities.Submission, error) {
 	r, err := srv.Courses.CourseWork.StudentSubmissions.
 		List(courseId, courseWorkId).
