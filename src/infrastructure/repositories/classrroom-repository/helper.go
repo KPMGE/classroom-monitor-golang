@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -30,13 +31,19 @@ func getClient(config *oauth2.Config) *http.Client {
 }
 
 // handle the auth-code returned from google
-func handleCode(authCode chan string) {
+func handleCode(authCode chan string, wg *sync.WaitGroup) {
 	fmt.Println("Waiting for the user confirmation...")
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		authCode <- r.FormValue("code")
 		fmt.Fprintf(w, "You may close this window now!")
+		wg.Done()
 	})
-	http.ListenAndServe(":3333", nil)
+
+	err := http.ListenAndServe(":5003", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Request a token from the web, then returns the retrieved token.
@@ -44,16 +51,23 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	fmt.Printf("Allow the application accessing the link: \n%v\n", authURL)
 
+	// channel for the authCode
 	authCode := make(chan string)
 
+	// creates wait group
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	// runs code handler concurrently
-	go handleCode(authCode)
+	go handleCode(authCode, &wg)
 
 	// exchanges the authorization token
 	tok, err := config.Exchange(context.TODO(), <-authCode)
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web: %v", err)
 	}
+
+	wg.Wait()
 
 	return tok
 }
