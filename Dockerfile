@@ -16,5 +16,6 @@ COPY --from=build-stage /classroom-api/main /api
 COPY --from=build-stage /classroom-api/credentials.json /api
 
 EXPOSE 3333
+EXPOSE 5003
 
 CMD ["./main"]
