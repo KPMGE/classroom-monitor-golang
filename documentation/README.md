@@ -2,19 +2,14 @@
 
 ### Setting up google credentials
 This projects relies on the google apis. So, you need to go to google cloud platform and 
-create an application there. After that, you can go ahead and download a __.json__ file with 
-your app's credentials. Just name that file __credentials.json__ and place it at the project's
+create an application there. After that, you can go ahead and download a *.json* file with 
+your app's credentials. Just name that file *credentials.json* and place it at the project's
 root directory.
 
 ### How to set up docker container
-You can run this application with docker, first you gotta build your image,
-go to the root directory and run the command: 
-
-```bash
-sudo docker build -t classroom-go-api .
-```
-
-Then, you can run a container using: 
+First of all, you should have your google oauth credentials. In order to get them, 
+go to the google's documentation. Once you've made the app, download your credentials and 
+name your file *credentials.json*. Then, run the following command: 
 
 ```bash
 sudo docker run -it \
@@ -22,10 +17,16 @@ sudo docker run -it \
   -p 3333:3333 \
   -v $(pwd)/credentials.json:/api/credentials.json \
   -p 5003:5003 \
-  classroom-go-api
+  kevincarvalhodejesus/classroom-go-api
 ```
 
-Make sure your credentials file is named *credentials.json*!
+After a few seconds, you should have a container running and a message with a link for authentication 
+should appear, click on it and allow the application to access your google classroom data.
+
+### How to test the api? 
+You can test the api directly calling the routes using some sort of a client. If you just want to test it 
+locally, you can use something like *insomnia* for example.
+
 
 ### How to generate api route docs.
 In order to generate your api route docs, run the following command:
