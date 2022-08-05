@@ -17,8 +17,15 @@ sudo docker build -t classroom-go-api .
 Then, you can run a container using: 
 
 ```bash
-sudo docker run -it -p3333:3333 -p5003:5003 --name classroom-go classroom-go-api
+sudo docker run -it \
+  --name classroom-go \
+  -p 3333:3333 \
+  -v $(pwd)/credentials.json:/api/credentials.json \
+  -p 5003:5003 \
+  classroom-go-api
 ```
+
+Make sure your credentials file is named *credentials.json*!
 
 ### How to generate api route docs.
 In order to generate your api route docs, run the following command:
