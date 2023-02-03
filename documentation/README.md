@@ -9,7 +9,28 @@ root directory.
 ### How to set up docker container
 First of all, you should have your google oauth credentials. In order to get them, 
 go to the google's documentation. Once you've made the app, download your credentials and 
-name your file *credentials.json*. Then, run the following command: 
+name your file *credentials.json*.
+
+Here's an example of how such a file should look like: 
+
+```bash
+{
+  "installed": {
+    "client_id": "<some id>",
+    "project_id": "<proj id>",
+    "auth_uri": "<some uri>",
+    "token_uri": "<some token>",
+    "auth_provider_x509_cert_url": "<some provider>",
+    "client_secret": "<some secret>",
+    "redirect_uris": [
+      "http://localhost:5003"
+    ]
+  }
+}
+```
+
+It's important to notice that, there must be the port *5003* after the redirect url, to make sure 
+it gets the data from google correctly.
 
 ```bash
 sudo docker run -it \
